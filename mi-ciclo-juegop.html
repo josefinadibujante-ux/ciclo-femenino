@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu Mundo Interior — Ciclo Menstrual</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FDF6EE;--rose:#D4847A;--rose2:#E8A89E;--rosep:#F5DDD9;
+  --terra:#A0624A;--terra2:#C4886E;--sage:#7A9B7A;--sage2:#9DB89D;--sagep:#D8EAD8;
+  --nude:#C9A882;--nudep:#EDE0D0;--brown:#6B4226;
+  --gold:#C9A84C;--goldp:#F5ECC8;
+  --plum:#7B4F6E;--plump:#EAD8E5;
+  --sky:#6A8FAF;--skyp:#D8E8F5;
+  --text:#3A2518;--texts:#7A5A40;
+}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
+#s-intro{align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem;background:linear-gradient(160deg,#FDF6EE 0%,#F0E4D4 50%,#E8D8C8 100%)}
+.intro-orb{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#F5DDD9,#D4847A 60%,#A0624A);margin:0 auto 1.2rem;animation:pulse 3s ease-in-out infinite;box-shadow:0 0 40px #D4847A55}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.intro-title{font-family:'Playfair Display',serif;font-size:30px;color:var(--terra);line-height:1.2;margin-bottom:.4rem}
+.intro-title em{color:var(--rose);font-style:italic}
+.intro-sub{font-size:13px;color:var(--texts);line-height:1.7;max-width:300px;margin:.4rem auto 1.5rem}
+.btn-primary{background:var(--terra);color:#fff;border:none;border-radius:50px;padding:13px 32px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:var(--rose);transform:translateY(-2px)}
+.intro-chars{display:flex;gap:10px;justify-content:center;margin-top:1.5rem}
+.intro-char{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid rgba(255,255,255,.6)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--cream);border-bottom:1px solid var(--nudep);flex-shrink:0}
+.day-badge{background:var(--terra);color:#fff;border-radius:20px;padding:3px 12px;font-size:13px;font-weight:700}
+.phase-label{font-family:'Playfair Display',serif;font-size:13px;color:var(--terra);font-style:italic}
+.score-badge{background:var(--sagep);color:#3A6A3A;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
+.body-section{position:relative;display:flex;justify-content:center;align-items:center;padding:12px 12px 6px;min-height:260px}
+.body-canvas{position:relative;width:200px;height:240px}
+.char-svg{width:100%;height:100%}
+.organ-btn{cursor:pointer;transition:all .3s}
+.organ-btn:hover{filter:brightness(1.15)}
+@keyframes ring{0%{r:12;opacity:.8}100%{r:22;opacity:0}}
+.pulse-ring{animation:ring 1.8s ease-out infinite}
+.emotions-float{position:absolute;top:0;right:-8px;display:flex;flex-direction:column;gap:7px}
+.emo-char{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid rgba(255,255,255,.7);cursor:pointer;transition:all .2s;animation:floatY 3s ease-in-out infinite}
+.emo-char:nth-child(2){animation-delay:.6s}
+.emo-char:nth-child(3){animation-delay:1.2s}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hormone-section{padding:8px 14px 0;background:var(--cream);margin:0 10px;border-radius:12px 12px 0 0;border:1px solid var(--nudep);border-bottom:none}
+.hormone-title{font-size:10px;font-weight:700;color:var(--texts);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.hormone-graph{height:55px;width:100%}
+.hormone-graph svg{width:100%;height:100%}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:7px 10px 10px;background:var(--cream);margin:0 10px;border-radius:0 0 12px 12px;border:1px solid var(--nudep);border-top:none}
+.panel-card{border-radius:9px;padding:9px 11px;border:1px solid;cursor:pointer}
+.panel-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.panel-value{font-family:'Playfair Display',serif;font-size:14px}
+.panel-bar{height:4px;border-radius:3px;margin-top:5px;overflow:hidden;background:rgba(0,0,0,.08)}
+.panel-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.panel-uterus{background:var(--rosep);border-color:var(--rose2)}
+.panel-uterus .panel-label{color:var(--terra)}
+.panel-uterus .panel-value{color:var(--terra)}
+.panel-uterus .panel-fill{background:var(--rose)}
+.panel-energy{background:var(--sagep);border-color:var(--sage2)}
+.panel-energy .panel-label{color:var(--sage)}
+.panel-energy .panel-value{color:#3A6A3A}
+.panel-energy .panel-fill{background:var(--sage)}
+.panel-mind{background:var(--plump);border-color:var(--plum)}
+.panel-mind .panel-label{color:var(--plum)}
+.panel-mind .panel-value{color:var(--plum)}
+.panel-mind .panel-fill{background:var(--plum)}
+.panel-symp{background:var(--goldp);border-color:var(--gold)}
+.panel-symp .panel-label{color:#7A6010}
+.panel-symp .panel-value{color:#7A6010}
+.decision-section{padding:10px 12px;margin:7px 10px 0;background:var(--cream);border-radius:12px;border:1px solid var(--nudep)}
+.decision-title{font-family:'Playfair Display',serif;font-size:13px;color:var(--terra);font-style:italic;margin-bottom:6px}
+.decision-msg{font-size:12px;color:var(--texts);line-height:1.5;margin-bottom:8px}
+.decisions{display:flex;flex-direction:column;gap:5px}
+.dec-btn{background:var(--nudep);border:1px solid var(--nude);border-radius:8px;padding:8px 12px;font-family:'Nunito',sans-serif;font-size:12px;color:var(--text);cursor:pointer;text-align:left;transition:all .2s;font-weight:600}
+.dec-btn:hover:not(:disabled){background:var(--rosep);border-color:var(--rose2);color:var(--terra)}
+.dec-btn:disabled{opacity:.6;cursor:default}
+.dec-btn.chosen-good{background:var(--sagep);border-color:var(--sage);color:#2A5A2A}
+.dec-btn.chosen-bad{background:var(--rosep);border-color:var(--rose);color:#7A2A2A}
+.advance-row{display:flex;gap:8px;padding:8px 10px 0;align-items:center}
+.btn-day{background:var(--terra);color:#fff;border:none;border-radius:50px;padding:9px 22px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;flex:1;transition:all .2s}
+.btn-day:hover{background:var(--rose)}
+.day-counter{font-size:11px;color:var(--texts);white-space:nowrap}
+.feedback{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);background:var(--cream);border-radius:18px;padding:20px 18px;text-align:center;box-shadow:0 20px 60px rgba(58,37,24,.25);z-index:200;max-width:280px;width:90%;opacity:0;pointer-events:none;transition:all .25s}
+.feedback.show{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1)}
+.feedback-emoji{font-size:42px;margin-bottom:6px}
+.feedback-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--terra);margin-bottom:5px}
+.feedback-text{font-size:12px;color:var(--texts);line-height:1.6;margin-bottom:12px}
+.btn-close{background:var(--terra);color:#fff;border:none;border-radius:50px;padding:7px 22px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.organ-overlay{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-radius:18px 18px 0 0;padding:18px 16px 24px;box-shadow:0 -10px 40px rgba(58,37,24,.2);z-index:150;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:70vh;overflow-y:auto}
+.organ-overlay.show{transform:translateY(0)}
+.organ-overlay-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--terra);font-style:italic;margin-bottom:3px}
+.organ-close{position:absolute;top:14px;right:16px;background:var(--nudep);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--texts)}
+.organ-anim{height:90px;display:flex;align-items:center;justify-content:center;margin:10px 0}
+.organ-desc{font-size:12px;color:var(--texts);line-height:1.7}
+.organ-phase-tag{display:inline-block;background:var(--rosep);color:var(--terra);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;margin-bottom:6px}
+.dimmer{position:fixed;inset:0;background:rgba(58,37,24,.4);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s}
+.dimmer.show{opacity:1;pointer-events:all}
+#s-result{align-items:center;justify-content:flex-start;padding:2rem 1.5rem;background:linear-gradient(160deg,#FDF6EE 0%,#F0E4D4 60%,#E8D8C8 100%);overflow-y:auto}
+.result-orb{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 1rem;animation:pulse 2.5s ease-in-out infinite}
+.result-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--terra);text-align:center;font-style:italic;margin-bottom:.3rem}
+.result-score-big{font-family:'Playfair Display',serif;font-size:52px;color:var(--rose);text-align:center;line-height:1;margin-bottom:.3rem}
+.result-score-label{font-size:13px;color:var(--texts);text-align:center;margin-bottom:1.2rem}
+.result-grade{font-family:'Playfair Display',serif;font-size:20px;text-align:center;margin-bottom:.5rem}
+.result-msg{font-size:13px;color:var(--texts);line-height:1.7;text-align:center;max-width:320px;margin:0 auto 1.5rem}
+.result-phases{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:340px;margin-bottom:1.5rem}
+.result-phase-card{border-radius:10px;padding:10px 12px;border:1px solid}
+.result-phase-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.result-phase-score{font-family:'Playfair Display',serif;font-size:18px}
+.result-phase-bar{height:4px;border-radius:3px;margin-top:5px;overflow:hidden;background:rgba(0,0,0,.1)}
+.result-phase-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.result-tip{background:var(--nudep);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--texts);line-height:1.6;width:100%;max-width:340px;margin-bottom:1.5rem}
+.result-tip strong{color:var(--terra)}
+.btn-restart{background:var(--terra);color:#fff;border:none;border-radius:50px;padding:12px 32px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-restart:hover{background:var(--rose)}
+</style>
+</head>
+<body>
+
+<div id="s-intro" class="screen on">
+  <div class="intro-orb"></div>
+  <h1 class="intro-title">Tu Mundo<br><em>Interior</em></h1>
+  <p class="intro-sub">Viaja 28 días dentro de tu cuerpo. Toma decisiones, ve tus hormonas, y descubre cuánto sabes de ti misma.</p>
+  <div class="intro-chars">
+    <div class="intro-char" style="background:#F5DDD9">😌</div>
+    <div class="intro-char" style="background:#D8EAD8">⚡</div>
+    <div class="intro-char" style="background:#EAD8E5">🌙</div>
+    <div class="intro-char" style="background:#F5ECC8">💛</div>
+  </div>
+  <p style="font-size:11px;color:var(--texts);margin:6px 0 14px">Tus emociones viven dentro de ti</p>
+  <button class="btn-primary" onclick="startGame()">Entrar a mi cuerpo →</button>
+</div>
+
+<div id="s-game" class="screen">
+  <div class="topbar">
+    <div class="day-badge" id="day-badge">Día 1</div>
+    <div class="phase-label" id="phase-label">Fase Menstrual</div>
+    <div class="score-badge" id="score-badge">✓ 0 / 0</div>
+  </div>
+  <div class="game-body" style="overflow-y:auto;padding-bottom:14px">
+    <div class="body-section">
+      <div class="body-canvas">
+        <svg class="char-svg" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+          <ellipse id="body-glow" cx="110" cy="140" rx="70" ry="90" fill="var(--rosep)" opacity="0.35"/>
+          <ellipse cx="110" cy="38" rx="28" ry="30" fill="#E8C5A8" stroke="#C9A882" stroke-width="1"/>
+          <ellipse cx="110" cy="20" rx="30" ry="18" fill="#6B4226"/>
+          <ellipse cx="88" cy="36" rx="10" ry="20" fill="#6B4226"/>
+          <ellipse cx="132" cy="36" rx="10" ry="20" fill="#6B4226"/>
+          <circle cx="102" cy="38" r="2.5" fill="#6B4226" opacity=".6"/>
+          <circle cx="118" cy="38" r="2.5" fill="#6B4226" opacity=".6"/>
+          <path id="char-mouth" d="M103 46 Q110 51 117 46" fill="none" stroke="#A0624A" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="104" y="66" width="12" height="14" rx="4" fill="#E8C5A8"/>
+          <path d="M80,80 Q68,90 66,120 L66,170 Q68,185 110,188 Q152,185 154,170 L154,120 Q152,90 140,80 Q125,76 110,76 Q95,76 80,80Z" fill="#D4917A" stroke="#C4886E" stroke-width="1"/>
+          <path d="M88,90 Q95,100 110,96 Q125,100 132,90" fill="none" stroke="#C4886E" stroke-width="1" opacity=".5"/>
+          <path d="M80,85 Q60,95 56,130 Q54,145 60,155" fill="none" stroke="#D4917A" stroke-width="14" stroke-linecap="round"/>
+          <path d="M140,85 Q160,95 164,130 Q166,145 160,155" fill="none" stroke="#D4917A" stroke-width="14" stroke-linecap="round"/>
+          <ellipse cx="60" cy="158" rx="9" ry="7" fill="#E8C5A8"/>
+          <ellipse cx="160" cy="158" rx="9" ry="7" fill="#E8C5A8"/>
+          <path d="M66,168 Q68,195 70,215 L90,230 Q110,235 130,230 L150,215 Q152,195 154,168Z" fill="#C9A882" stroke="#A08050" stroke-width="1"/>
+          <path d="M90,228 Q86,245 87,260" fill="none" stroke="#D4917A" stroke-width="12" stroke-linecap="round"/>
+          <path d="M130,228 Q134,245 133,260" fill="none" stroke="#D4917A" stroke-width="12" stroke-linecap="round"/>
+          <g class="organ-btn" onclick="showOrgan('brain')">
+            <ellipse cx="110" cy="35" rx="14" ry="12" fill="#9370B8" opacity="0"/>
+          </g>
+          <g class="organ-btn" onclick="showOrgan('uterus')">
+            <ellipse id="uterus-body" cx="110" cy="152" rx="18" ry="14" fill="#D4847A" stroke="#A0624A" stroke-width="1.2"/>
+            <path d="M92,150 Q82,145 76,150 Q72,154 75,158" fill="none" stroke="#C4886E" stroke-width="2" stroke-linecap="round"/>
+            <path d="M128,150 Q138,145 144,150 Q148,154 145,158" fill="none" stroke="#C4886E" stroke-width="2" stroke-linecap="round"/>
+            <ellipse id="ovary-l" cx="74" cy="158" rx="7" ry="5" fill="#E8A89E" stroke="#C4886E" stroke-width="1"/>
+            <ellipse id="ovary-r" cx="146" cy="158" rx="7" ry="5" fill="#E8A89E" stroke="#C4886E" stroke-width="1"/>
+            <circle id="ovum" cx="146" cy="158" r="3" fill="#F5ECC8" stroke="#C9A84C" stroke-width="1" opacity="0"/>
+          </g>
+        </svg>
+      </div>
+      <div class="emotions-float" id="emotions-float"></div>
+    </div>
+    <div class="hormone-section">
+      <div class="hormone-title">Hormonas en vivo</div>
+      <div class="hormone-graph">
+        <svg id="hormone-svg" viewBox="0 0 300 55" preserveAspectRatio="none">
+          <line x1="0" y1="14" x2="300" y2="14" stroke="#E0D0C0" stroke-width="0.5"/>
+          <line x1="0" y1="28" x2="300" y2="28" stroke="#E0D0C0" stroke-width="0.5"/>
+          <line x1="0" y1="42" x2="300" y2="42" stroke="#E0D0C0" stroke-width="0.5"/>
+          <line id="day-marker" x1="0" y1="0" x2="0" y2="55" stroke="#A0624A" stroke-width="1.5" opacity="0.7"/>
+          <polyline id="estrogen-line" points="" fill="none" stroke="#D4847A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline id="prog-line" points="" fill="none" stroke="#7A9B7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline id="lh-line" points="" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="5" cy="6" r="3" fill="#D4847A"/>
+          <text x="10" y="9" font-size="6" fill="#7A5A40" font-family="Nunito,sans-serif">Estrógeno</text>
+          <circle cx="62" cy="6" r="3" fill="#7A9B7A"/>
+          <text x="67" y="9" font-size="6" fill="#7A5A40" font-family="Nunito,sans-serif">Progesterona</text>
+          <circle cx="128" cy="6" r="3" fill="#C9A84C"/>
+          <text x="133" y="9" font-size="6" fill="#7A5A40" font-family="Nunito,sans-serif">LH</text>
+        </svg>
+      </div>
+    </div>
+    <div class="panels">
+      <div class="panel-card panel-uterus" onclick="showOrgan('uterus')">
+        <div class="panel-label">Útero</div>
+        <div class="panel-value" id="panel-uterus-val">Menstruando</div>
+        <div class="panel-bar"><div class="panel-fill" id="uterus-bar" style="width:30%"></div></div>
+      </div>
+      <div class="panel-card panel-energy">
+        <div class="panel-label">Energía</div>
+        <div class="panel-value" id="panel-energy-val">Baja</div>
+        <div class="panel-bar"><div class="panel-fill" id="energy-bar" style="width:25%"></div></div>
+      </div>
+      <div class="panel-card panel-mind" onclick="showOrgan('brain')">
+        <div class="panel-label">Mente</div>
+        <div class="panel-value" id="panel-mind-val">Introspectiva</div>
+        <div class="panel-bar"><div class="panel-fill" id="mind-bar" style="width:40%"></div></div>
+      </div>
+      <div class="panel-card panel-symp">
+        <div class="panel-label">Síntoma hoy</div>
+        <div class="panel-value" id="panel-symp-val">Cólicos 🩸</div>
+      </div>
+    </div>
+    <div class="decision-section">
+      <div class="decision-title" id="dec-title">¿Qué haces hoy?</div>
+      <div class="decision-msg" id="dec-msg"></div>
+      <div class="decisions" id="dec-options"></div>
+    </div>
+    <div class="advance-row">
+      <button class="btn-day" id="btn-next" onclick="advanceDay()">Siguiente día →</button>
+      <div class="day-counter" id="day-counter">1 / 28</div>
+    </div>
+  </div>
+</div>
+
+<div id="s-result" class="screen">
+  <div class="result-orb" id="res-orb"></div>
+  <div class="result-title">Tu ciclo completo</div>
+  <div class="result-score-big" id="res-score-big"></div>
+  <div class="result-score-label" id="res-score-label"></div>
+  <div class="result-grade" id="res-grade"></div>
+  <div class="result-msg" id="res-msg"></div>
+  <div class="result-phases" id="res-phases"></div>
+  <div class="result-tip" id="res-tip"></div>
+  <button class="btn-restart" onclick="restartGame()">🌸 Jugar de nuevo</button>
+</div>
+
+<div class="dimmer" id="dimmer" onclick="closeOrgan()"></div>
+<div class="organ-overlay" id="organ-overlay">
+  <div class="organ-overlay-title" id="oo-title"></div>
+  <button class="organ-close" onclick="closeOrgan()">✕</button>
+  <div class="organ-anim" id="oo-anim"></div>
+  <div class="organ-phase-tag" id="oo-phase"></div>
+  <div class="organ-desc" id="oo-desc"></div>
+</div>
+<div class="feedback" id="feedback">
+  <div class="feedback-emoji" id="fb-emoji"></div>
+  <div class="feedback-title" id="fb-title"></div>
+  <div class="feedback-text" id="fb-text"></div>
+  <button class="btn-close" onclick="closeFeedback()">Continuar</button>
+</div>
+
+<script>
+const PHASES=[{name:'Menstrual',days:[1,2,3,4,5],color:'#D4847A',icon:'🩸'},{name:'Folicular',days:[6,7,8,9,10,11,12,13],color:'#C9A84C',icon:'🌱'},{name:'Ovulación',days:[14,15,16],color:'#7B4F6E',icon:'✨'},{name:'Lútea',days:[17,18,19,20,21,22,23,24,25,26,27,28],color:'#7A9B7A',icon:'🌙'}];
+const H={estrogen:[20,18,15,18,22,30,45,60,72,82,88,90,85,70,50,55,52,48,45,42,38,35,32,28,25,22,20,18],prog:[5,5,5,5,5,5,5,5,5,8,10,12,10,8,5,15,28,45,60,68,70,65,55,45,35,25,15,8],lh:[5,5,5,5,5,5,5,5,8,10,12,15,20,80,90,20,10,8,6,5,5,5,5,5,5,5,5,5]};
+const ENERGY=[20,18,15,20,25,35,50,62,70,78,82,85,80,75,70,65,60,55,50,48,44,40,36,32,28,25,22,20];
+const UTERUS_STATE=['Menstruando','Menstruando','Menstruando','Menstruando','Menstruando','Reparando','Engrosando','Engrosando','Engrosando','Floreciendo','Floreciendo','Lista','Ovulando','Ovulando','Post-ovu','Preparando','Preparando','Preparando','Nutriendo','Nutriendo','Nutriendo','Esperando','Esperando','Esperando','SPM cercano','SPM cercano','Desprendiendo','Desprendiendo'];
+const MIND_STATE=['Introspectiva','Tranquila','Reflexiva','Sensible','Calma','Renovada','Clara','Enfocada','Creativa','Brillante','Radiante','Poderosa','Confiada','Eufórica','Social','Relajada','Metódica','Detallista','Sensible','Soñadora','Reflexiva','Nostálgica','Emocional','Intuitiva','Inquieta','Tensa','Sensible','Lista'];
+const SYMPTOMS=['Cólicos 🩸','Flujo intenso','Cansancio','Cansancio leve','Algo sensible','Energía ✨','Claridad 🧠','Luminosa ✨','Fuerza 💪','En mi mejor momento','Pico energía ⚡','Magnética ✨','Deseo alto 🌸','Ovulación ✨','Mittelschmerz','Calma post-ovu','Senos sensibles','Apetito ↑','Cambios humor','Hinchazón leve','Retención','Antojos 🍫','Irritabilidad','SPM leve','SPM ⚡','Fatiga','Retención','Inicio sangrado'];
+const EMOTIONS=[[{e:'😔',c:'#F5DDD9',n:'Tristeza'},{e:'😮‍💨',c:'#EDE0D0',n:'Cansancio'}],[{e:'🌱',c:'#D8EAD8',n:'Esperanza'},{e:'😊',c:'#F5ECC8',n:'Calma'}],[{e:'✨',c:'#EAD8E5',n:'Emoción'},{e:'😍',c:'#F5DDD9',n:'Deseo'}],[{e:'🌙',c:'#D8EAD8',n:'Paz'},{e:'😤',c:'#F5DDD9',n:'Irritación'}]];
+const DAILY_DECISIONS=[{msg:'Primer día de sangrado. Tu cuerpo inicia su renovación.',opts:[{t:'🛏️ Descansar con calor en el abdomen',good:true,fb:'¡Perfecto! El calor dilata los vasos sanguíneos y reduce los espasmos uterinos provocados por las prostaglandinas. Es exactamente lo que tu cuerpo necesita hoy.'},{t:'🏋️ Ir al gimnasio a entrenar fuerte',good:false,fb:'El ejercicio intenso el día 1 puede aumentar el flujo y los cólicos. Tu útero está trabajando duro — el descanso activo es más sabio hoy.'},{t:'🧘 Yoga restaurativo con posturas de apertura',good:true,fb:'¡Excelente! Las posturas de yoga suave liberan endorfinas que alivian el dolor menstrual de forma natural. Las posturas de apertura de cadera son especialmente beneficiosas.'}]},{msg:'Flujo intenso. Las prostaglandinas están altas y pueden causar molestias.',opts:[{t:'💊 Ibuprofeno preventivo antes de que duela',good:true,fb:'¡Muy inteligente! El ibuprofeno bloquea la producción de prostaglandinas — funciona mejor tomado antes de que aparezca el dolor, no después.'},{t:'☕ Tomar mucho café para aguantar el día',good:false,fb:'La cafeína puede empeorar los cólicos porque contrae los vasos sanguíneos. Mejor optar por té de jengibre o manzanilla que tienen efecto antiinflamatorio.'},{t:'🍫 Comer chocolate negro y almendras',good:true,fb:'¡Sabia elección! El chocolate negro (70%+) aporta magnesio que relaja los músculos uterinos, y las almendras tienen zinc y vitamina E que ayudan durante la menstruación.'}]},{msg:'El sangrado continúa. Tus niveles de hierro pueden estar bajando.',opts:[{t:'🥬 Comer lentejas con espinacas en el almuerzo',good:true,fb:'¡Brillante! Las lentejas y espinacas son ricas en hierro. Combinarlas con vitamina C triplica la absorción del hierro. Tu sangre lo agradece.'},{t:'🍕 Pedir pizza porque no tienes energía para cocinar',good:false,fb:'Los alimentos procesados aumentan la inflamación. Si no puedes cocinar, una opción rápida con legumbres o huevos sería mejor para tu ciclo.'},{t:'🚿 Darte un baño caliente antes de dormir',good:true,fb:'El calor del baño relaja todo el sistema musculoesquelético, incluyendo el útero. También mejora la calidad del sueño que tanto necesitas.'}]},{msg:'El flujo disminuye. Un poco más de energía empieza a volver.',opts:[{t:'🚶 Caminar 30 minutos al aire libre',good:true,fb:'¡Perfecto para este día! Una caminata suave activa la circulación, libera endorfinas leves y no sobrecarga tu cuerpo. El aire fresco también eleva el ánimo.'},{t:'📺 Ver series en cama todo el día',good:false,fb:'Al día 4 tu cuerpo ya puede moverse suavemente. El sedentarismo prolongado puede aumentar la retención de líquidos y la fatiga.'},{t:'📓 Escribir en un diario cómo te sientes',good:true,fb:'¡Hermosa elección! La introspección menstrual tiene base científica — el cerebro en esta fase procesa emociones profundas. Escribir reduce el cortisol y clarifica pensamientos.'}]},{msg:'Último día de menstruación. El estrógeno comienza a despertar.',opts:[{t:'🌿 Preparar una comida nutritiva y colorida',good:true,fb:'¡Tu instinto es correcto! Al finalizar la menstruación tu cuerpo necesita reponer hierro, zinc y vitaminas. Los alimentos coloridos son perfectos.'},{t:'🏃 Salir a correr 10km de golpe',good:false,fb:'Aunque el estrógeno empieza a subir, tu cuerpo todavía está terminando el proceso menstrual. Espera 2 días más para la intensidad.'},{t:'✨ Hacer una pequeña lista de metas para la semana',good:true,fb:'¡Timing perfecto! El estrógeno que empieza a subir potencia la dopamina y la motivación. Escribir metas ahora activa el sistema de recompensa en el momento ideal.'}]},{msg:'¡La fase folicular comienza! Tu energía renace. El estrógeno sube.',opts:[{t:'🎨 Empezar un proyecto creativo que tenías pendiente',good:true,fb:'¡El momento ideal! El estrógeno potencia la dopamina, la serotonina y la neuroplasticidad. Tu cerebro está literalmente más creativo. ¡No desperdicies esta ventana!'},{t:'😴 Seguir descansando igual que en la menstruación',good:false,fb:'La biología dice lo contrario: el estrógeno te está dando energía creciente. Mantener el mismo nivel de reposo es perder una de las mejores semanas de tu ciclo.'},{t:'📚 Estudiar o aprender algo nuevo',good:true,fb:'¡Excelente sincronía! Los estudios muestran que el estrógeno mejora la formación de memorias nuevas. Es la fase donde más rápido aprendes. Aprovecha este superpoder biológico.'}]},{msg:'Energía en aumento. Tu piel empieza a verse más luminosa.',opts:[{t:'💆 Hacerte una rutina de cuidado facial',good:true,fb:'¡Tu instinto es perfecto! El estrógeno en alza aumenta la producción de colágeno y mejora la hidratación de la piel. Es el mejor momento del ciclo para tratamientos de belleza.'},{t:'🍟 Comer comida rápida todo el día',good:false,fb:'Los alimentos ultraprocesados elevan la inflamación justo cuando tu cuerpo está floreciendo. Opta por semillas, verduras verdes y frutas.'},{t:'🏊 Hacer natación o pilates',good:true,fb:'¡Sí! El estrógeno potencia la resistencia cardiovascular y la recuperación muscular. El pilates y la natación en esta fase son particularmente efectivos.'}]},{msg:'Claridad mental creciente. ¡Tu cerebro folicular está en forma!',opts:[{t:'💼 Trabajar en una presentación o proyecto importante',good:true,fb:'¡Timing perfecto! La memoria de trabajo, la concentración y la creatividad están en su mejor punto. Los proyectos que requieren pensamiento analítico brillan ahora.'},{t:'📱 Pasar el día en redes sociales sin producir nada',good:false,fb:'Tu cerebro tiene capacidades extraordinarias hoy gracias al estrógeno. Las redes sociales consumen esa energía cognitiva sin retorno. Redirige esa potencia.'},{t:'🥗 Preparar comidas saludables para la semana',good:true,fb:'¡Doble beneficio! Usar tu claridad mental folicular para planificar nutrición asegura que también cuidarás tu cuerpo durante la fase lútea.'}]},{msg:'El folículo dominante crece. Te sientes más segura y enfocada.',opts:[{t:'💬 Iniciar una conversación difícil que postergabas',good:true,fb:'¡Momento ideal! El estrógeno potencia la comunicación verbal y la empatía. Tu capacidad de expresarte con claridad está en su punto más alto folicular.'},{t:'🍷 Salir a tomar alcohol con amigas',good:false,fb:'El alcohol interfiere con el metabolismo del estrógeno en el hígado. Puede alterar el equilibrio hormonal y afectar la ovulación que se acerca.'},{t:'🎵 Hacer ejercicio con música que te motive',good:true,fb:'¡Sí! La combinación de ejercicio + dopamina folicular + música amplifica todos los efectos positivos. Tu rendimiento físico está mejorando día a día.'}]},{msg:'A mitad de la fase folicular. El folículo dominante se distingue ya.',opts:[{t:'🌱 Salir a la naturaleza — un parque o bosque',good:true,fb:'¡Perfecta sincronía! La luz solar natural eleva la serotonina que el estrógeno ya está potenciando. Estar en naturaleza reduce el cortisol un 20%.'},{t:'🚬 Fumar para "calmar los nervios"',good:false,fb:'Fumar reduce significativamente los niveles de estrógeno y puede alterar la ovulación. Los tóxicos del tabaco dañan los ovocitos en desarrollo.'},{t:'📖 Leer un libro desafiante o aprender un idioma',good:true,fb:'¡Neuroplasticidad en acción! El estrógeno facilita nuevas conexiones neuronales. Retos cognitivos durante esta fase tienen efectos duraderos en el aprendizaje.'}]},{msg:'Tu folículo dominante casi madura. La energía sigue en alza.',opts:[{t:'🤝 Hacer networking o conocer personas nuevas',good:true,fb:'¡Tu momento social folicular! El estrógeno aumenta la confianza, la empatía y la facilidad de palabra. Conocer personas nuevas se siente más natural ahora.'},{t:'🛋️ Quedarte encerrada evitando el mundo',good:false,fb:'Tu biología te está empujando hacia afuera. Resistirte a esto en la fase folicular es ir contra tu propia corriente hormonal.'},{t:'💪 Entrenamiento de fuerza de alta intensidad',good:true,fb:'¡El mejor momento del ciclo para ganar fuerza! El estrógeno mejora la síntesis de proteínas musculares. Los estudios muestran mayor ganancia muscular en esta fase.'}]},{msg:'Pre-ovulación. El estrógeno está casi en su pico. Te sientes poderosa.',opts:[{t:'✍️ Escribir, crear o diseñar algo',good:true,fb:'¡Tu ventana creativa está en su cúspide! El estrógeno, la dopamina y la serotonina en conjunto crean el estado mental más propicio para la creatividad.'},{t:'🍔 Comer comida chatarra porque "me lo merezco"',good:false,fb:'Los alimentos inflamatorios antes de la ovulación pueden alterar la calidad del moco cervical y la maduración del óvulo.'},{t:'🧠 Tomar decisiones importantes que venías postergando',good:true,fb:'¡Timing estratégico! Tu juicio, claridad y confianza están en su punto más alto. Las decisiones tomadas con estrógeno alto tienden a ser más reflexivas y asertivas.'}]},{msg:'Mañana es la ovulación. Tu cuerpo se prepara para su momento estelar.',opts:[{t:'😴 Dormir bien y preparar tu cuerpo',good:true,fb:'¡Sabia preparación! El sueño profundo durante la noche pre-ovulatoria apoya el pico de LH. El cortisol alto por falta de sueño puede retrasar o suprimir la ovulación.'},{t:'🌃 Trasnochar y no dormir bien',good:false,fb:'La privación de sueño eleva el cortisol, que puede suprimir el pico de LH necesario para la ovulación. Una sola noche de mal sueño puede alterar el proceso.'},{t:'🍓 Comer antioxidantes: berries, nueces, aguacate',good:true,fb:'¡Perfecto! Los antioxidantes protegen el óvulo en maduración del estrés oxidativo. Los ácidos grasos del aguacate y las nueces apoyan la calidad del óvulo.'}]},{msg:'¡El pico de LH desencadena la ovulación! Tu momento más poderoso.',opts:[{t:'🎤 Dar una presentación, hablar en público',good:true,fb:'¡Tu mejor día para brillar! El estrógeno y la testosterona están en su pico absoluto. Tu voz, confianza, carisma y comunicación verbal son máximos.'},{t:'🏠 Quedarte en casa sin interactuar con nadie',good:false,fb:'Biológicamente, la ovulación es tu día de mayor potencial social y comunicativo. Es el día que el cuerpo diseñó para conectar. Aprovecha esta energía.'},{t:'❤️ Conectar profundamente con alguien importante',good:true,fb:'¡La ovulación amplifica la empatía y el deseo de conexión. Las conversaciones profundas y los momentos de intimidad son más fáciles y ricos hoy.'}]},{msg:'La ovulación continúa. Máxima fertilidad. Te sientes magnética.',opts:[{t:'🌺 Hacer algo que te haga sentir hermosa y poderosa',good:true,fb:'¡Tu instinto es sabio! El estrógeno y la testosterona en pico generan una sensación real de atractivo y poder. Honrar esa sensación es bienestar hormonal.'},{t:'😤 Meterte en discusiones innecesarias',good:false,fb:'La testosterona alta puede generar más impulsividad. Usa esa energía asertiva para situaciones que la merezcan.'},{t:'🎭 Actividades sociales, arte, baile, música',good:true,fb:'¡Perfecto canal para tu energía ovulatoria! El arte y la expresión corporal amplifican el bienestar hormonal. Tu capacidad de disfrutar está en su máximo.'}]},{msg:'El óvulo ya fue liberado. La transición a la fase lútea comienza.',opts:[{t:'🥑 Incorporar más grasas saludables y proteína',good:true,fb:'¡Tu cuerpo lo necesita! La progesterona que empieza a producirse requiere colesterol como materia prima. Las grasas saludables apoyan directamente su producción.'},{t:'🍺 Celebrar la ovulación con alcohol',good:false,fb:'El alcohol en los días post-ovulatorios interfiere con la producción de progesterona del cuerpo lúteo. Justo ahora que empieza su función más importante.'},{t:'🧘 Meditación o respiración consciente',good:true,fb:'¡Transición perfecta! La meditación reduce el cortisol que puede interferir con la progesterona. Este día de transición es ideal para cambiar el ritmo hacia la calma lútea.'}]},{msg:'La fase lútea empieza. La progesterona toma el control suavemente.',opts:[{t:'📋 Organizar tu espacio de trabajo o casa',good:true,fb:'¡Tu instinto lúteo es perfecto! La progesterona genera una tendencia natural al orden y la preparación. Esta energía metódica es una fortaleza — úsala conscientemente.'},{t:'🎢 Forzarte a tener la misma energía que en la ovulación',good:false,fb:'La progesterona tiene un efecto calmante real sobre el sistema nervioso. Intentar mantener el mismo nivel de energía genera estrés interno. Cada fase tiene su ritmo.'},{t:'📝 Planificar metas a largo plazo',good:true,fb:'¡La visión lútea tiene profundidad única! La introspección de esta fase te ayuda a conectar con lo que realmente importa. La planificación desde aquí es más reflexiva y auténtica.'}]},{msg:'La progesterona sube. Tu cuerpo está preparando el endometrio.',opts:[{t:'🍳 Cocinar una comida nutritiva y acogedora',good:true,fb:'¡Perfecta elección lútea! La progesterona activa el instinto de "nidificación". Los alimentos cálidos y reconfortantes son los favoritos de esta fase.'},{t:'🎰 Tomar decisiones financieras arriesgadas',good:false,fb:'Los cambios hormonales de la fase lútea pueden amplificar la ansiedad. Las decisiones financieras importantes se toman mejor en la fase folicular o antes de la ovulación.'},{t:'🛁 Baño de sal de epsom para la retención de líquidos',good:true,fb:'¡Muy inteligente! El magnesio del sal de epsom se absorbe por la piel y ayuda a reducir la retención de líquidos. También relaja el sistema nervioso.'}]},{msg:'Progesterona alta. Apetito aumentado. Los antojos pueden aparecer.',opts:[{t:'🍫 Comer chocolate negro cuando hay antojos',good:true,fb:'¡Sí, con moderación! El chocolate negro (70%+) contiene magnesio y triptófano que eleva la serotonina. No es capricho, es química.'},{t:'🚫 Reprimir todos los antojos con fuerza de voluntad',good:false,fb:'Reprimir los antojos genera más estrés, que eleva el cortisol, que empeora los síntomas lúteos. Mejor escuchar qué nutriente pide tu cuerpo y satisfacerlo sabiamente.'},{t:'🌾 Comer carbohidratos complejos: avena, quinoa, boniato',good:true,fb:'¡Perfecto! Los carbohidratos complejos elevan la serotonina lentamente sin picos de glucosa. El triptófano de la avena apoya la producción de melatonina para mejor sueño lúteo.'}]},{msg:'La progesterona está en su punto más alto. Más calma, más detalle.',opts:[{t:'🔬 Revisar y editar trabajo con atención al detalle',good:true,fb:'¡Tu superpoder lúteo! La progesterona aumenta la atención al detalle y el pensamiento crítico. Es el mejor momento para revisar y mejorar trabajo ya creado.'},{t:'💨 Ignorar señales de retención de líquidos',good:false,fb:'La retención de líquidos en la fase lútea es real y tiene causas hormonales. Reducir el sodio, aumentar el potasio y mantenerse hidratada la reduce significativamente.'},{t:'🌊 Ejercicio cardiovascular moderado: nadar o bailar',good:true,fb:'¡Excelente! El ejercicio cardiovascular moderado libera endorfinas que contrarrestan la bajada de serotonina. No demasiado intenso — tu recuperación es más lenta ahora.'}]},{msg:'La fase lútea avanza. Puede aparecer mayor sensibilidad emocional.',opts:[{t:'🤗 Hablar con amigas sobre cómo te sientes',good:true,fb:'¡La conexión social es medicina hormonal! Compartir emociones eleva la oxitocina. No estás "siendo dramática" — tu química cerebral está cambiando de verdad.'},{t:'📣 Enviarte mensajes impulsivos a personas de tu pasado',good:false,fb:'La sensibilidad emocional lútea amplifica los sentimientos pasados. Las decisiones comunicativas tomadas ahora a menudo se ven diferente desde la fase folicular. Espera 5 días.'},{t:'🌙 Priorizar el sueño antes de las 23h',good:true,fb:'¡Tu cuerpo lo necesita! La progesterona tiene efecto sedante pero la fase lútea puede alterar el sueño profundo. Ir a dormir antes de las 23h mejora su calidad.'}]},{msg:'Retención de líquidos posible. El cuerpo guarda agua.',opts:[{t:'🥒 Comer alimentos diuréticos: pepino, espárrago, perejil',good:true,fb:'¡Perfecto antídoto natural! El pepino, espárrago y perejil son diuréticos naturales. El potasio del plátano también contrarresta la retención por sodio.'},{t:'🧂 Agregar mucha sal a las comidas',good:false,fb:'El sodio es exactamente lo opuesto a lo que necesitas. En estos días, menos sodio, más potasio es la ecuación correcta.'},{t:'🚶 Caminar 20 minutos para activar la circulación',good:true,fb:'¡La caminata activa el sistema linfático que elimina el líquido retenido! Solo 20 minutos de movimiento suave reducen visiblemente la hinchazón lútea.'}]},{msg:'SPM puede empezar a aparecer. Los cambios de humor son químicos.',opts:[{t:'🧠 Recordarte que los cambios de humor son hormonales',good:true,fb:'¡Autoconciencia poderosa! Nombrar los cambios de humor como "es la progesterona bajando" reduce su intensidad. El acto de etiquetar la emoción activa la corteza prefrontal.'},{t:'😡 Reaccionar a todo con la misma intensidad que sientes',good:false,fb:'La irritabilidad lútea está amplificada por la química hormonal. La pausa antes de responder tiene un valor especial en estos días.'},{t:'🫖 Tomar té de frambuesa roja o manzanilla',good:true,fb:'¡Sabiduría con base científica! El té de hoja de frambuesa roja relaja el músculo uterino. La manzanilla tiene apigenina que actúa como ansiolítico natural.'}]},{msg:'Los síntomas premenstruales pueden intensificarse. Escucha tu cuerpo.',opts:[{t:'🏃 Hacer ejercicio aunque no quieras (endorfinas)',good:true,fb:'¡La ciencia lo confirma! Incluso 15 minutos de ejercicio moderado liberan endorfinas que contrarrestan la bajada de serotonina del SPM. A veces el mayor obstáculo es empezar.'},{t:'🍟 Comer alimentos salados y azucarados en exceso',good:false,fb:'El azúcar genera picos de glucosa que amplifican los cambios de humor y la inflamación. La sal empeora la retención. Ambos intensifican los síntomas del SPM.'},{t:'📵 Reducir el tiempo de pantallas y redes sociales',good:true,fb:'¡Elección sabia! En el SPM, las redes sociales amplifican la comparación y la ansiedad. La luz azul además interfiere con la melatonina.'}]},{msg:'SPM en marcha. La serotonina baja. Tu cuerpo pide apoyo.',opts:[{t:'☀️ Salir a la luz solar al menos 20 minutos',good:true,fb:'¡La luz solar es antidepresivo natural! Activa la vitamina D y la serotonina. Exposición de 20 minutos tiene efectos medibles en el estado de ánimo durante el SPM.'},{t:'🌑 Quedarte en un cuarto oscuro todo el día',good:false,fb:'El aislamiento y la oscuridad potencian los síntomas depresivos del SPM. La luz es literalmente lo contrario de lo que tu sistema necesita ahora.'},{t:'💊 Magnesio + vitamina B6 como suplemento',good:true,fb:'¡Combinación científicamente validada para el SPM! El magnesio regula el sistema nervioso. La B6 es cofactor en la síntesis de serotonina. Juntos reducen el SPM hasta un 40% según estudios.'}]},{msg:'Casi al final del ciclo. El cuerpo se prepara para reiniciar.',opts:[{t:'🕯️ Una noche tranquila: baño, velas, sin pantallas',good:true,fb:'¡Perfecta manera de honrar el final del ciclo! Este ritual de calma reduce el cortisol, mejora el sueño y prepara el sistema nervioso para la transición hormonal.'},{t:'🎉 Forzarte a ir a una fiesta aunque no quieras',good:false,fb:'Obligarte a socializar cuando tu biología pide introversión genera disonancia hormonal. El estrés social en la fase lútea tardía eleva el cortisol que empeora todos los síntomas.'},{t:'📓 Escribir sobre lo que aprendiste este ciclo',good:true,fb:'¡La reflexión cíclica es una práctica poderosa! Documentar patrones de tu ciclo te permite conocerte profundamente y anticiparte. Es la base de la sincronización menstrual.'}]},{msg:'El endometrio empieza a desprenderse. El reinicio se acerca.',opts:[{t:'🌡️ Calentar el cuerpo: sopas, infusiones, ropa acogedora',good:true,fb:'¡Perfecta intuición! El calor ayuda al útero a prepararse. Las infusiones de jengibre y canela tienen propiedades antiinflamatorias adicionales.'},{t:'🧊 Ducharte con agua fría para "activarte"',good:false,fb:'El frío en los días premenstruales puede aumentar las contracciones uterinas. Los días 26-28 son mejor con calor.'},{t:'🌸 Preparar tu kit de primeros días de regla',good:true,fb:'¡Autoconocimiento y preparación! Tener listo lo que necesitas (compresas, ibuprofeno, bolsa de agua caliente, chocolate negro, té) elimina el estrés del día 1.'}]},{msg:'Último día del ciclo. El estrógeno y la progesterona están en mínimos.',opts:[{t:'🔄 Reflexionar sobre el ciclo completo que viviste',good:true,fb:'¡El cierre consciente del ciclo es transformador! Cada ciclo es una oportunidad de conocerte. Reconocer patrones y honrar lo que aprendiste es bienestar hormonal profundo.'},{t:'😤 Frustrarte con tu cuerpo por los síntomas',good:false,fb:'Tu cuerpo no es tu enemigo — está haciendo exactamente lo que debe. La frustración y el juicio elevan el cortisol que empeora todo. La compasión hacia tu ciclo es el primer paso.'},{t:'🌙 Dormir temprano y prepararte para reiniciar',good:true,fb:'¡Preparación perfecta para el Día 1! El sueño de calidad antes del inicio del nuevo ciclo reduce la intensidad de los cólicos del primer día. Tu cuerpo hace un trabajo enorme — merece ese descanso.'}]}];
+let day=1,totalCorrect=0,totalAnswered=0,decidedToday=false;
+let phaseScores={0:{c:0,t:0},1:{c:0,t:0},2:{c:0,t:0},3:{c:0,t:0}};
+function getPhase(d){for(let i=0;i<PHASES.length;i++)if(PHASES[i].days.includes(d))return i;return 3;}
+function buildHormonePoints(arr,h=55,pad=4){return arr.map((v,i)=>{const x=(i/(arr.length-1))*300;const y=pad+(1-v/100)*(h-pad*2);return x.toFixed(1)+','+y.toFixed(1);}).join(' ');}
+function initHormoneGraph(){document.getElementById('estrogen-line').setAttribute('points',buildHormonePoints(H.estrogen));document.getElementById('prog-line').setAttribute('points',buildHormonePoints(H.prog));document.getElementById('lh-line').setAttribute('points',buildHormonePoints(H.lh));}
+function updateDayMarker(d){const x=((d-1)/27)*300;const el=document.getElementById('day-marker');if(el){el.setAttribute('x1',x);el.setAttribute('x2',x);}}
+function renderDay(){
+  const di=day-1;const phIdx=getPhase(day);const ph=PHASES[phIdx];decidedToday=false;
+  document.getElementById('day-badge').textContent='Día '+day;
+  document.getElementById('phase-label').textContent=ph.icon+' '+ph.name;
+  document.getElementById('score-badge').textContent='✓ '+totalCorrect+' / '+totalAnswered;
+  document.getElementById('day-counter').textContent=day+' / 28';
+  document.getElementById('btn-next').textContent=day===28?'Ver mi resultado 🌸':'Siguiente día →';
+  updateDayMarker(day);
+  const energy=ENERGY[di];
+  document.getElementById('panel-uterus-val').textContent=UTERUS_STATE[di];
+  document.getElementById('uterus-bar').style.width=(20+phIdx*20)+'%';
+  document.getElementById('panel-energy-val').textContent=energy<35?'Baja':energy<60?'Media':energy<80?'Alta':'Máxima';
+  document.getElementById('energy-bar').style.width=energy+'%';
+  document.getElementById('panel-mind-val').textContent=MIND_STATE[di];
+  document.getElementById('mind-bar').style.width=(30+energy*.4)+'%';
+  document.getElementById('panel-symp-val').textContent=SYMPTOMS[di];
+  document.getElementById('body-glow').setAttribute('fill',ph.color+'44');
+  const colors=['#D4847A','#C9A882','#7B4F6E','#7A9B7A'];
+  const oColors=[['#E8A89E','#E8A89E'],['#F5DDD9','#F5ECC8'],['#EAD8E5','#EAD8E5'],['#D8EAD8','#D8EAD8']];
+  document.getElementById('uterus-body').setAttribute('fill',colors[phIdx]);
+  document.getElementById('ovary-l').setAttribute('fill',oColors[phIdx][0]);
+  document.getElementById('ovary-r').setAttribute('fill',oColors[phIdx][1]);
+  document.getElementById('ovum').setAttribute('opacity',phIdx===2?'1':'0');
+  const mouths=['M103 47 Q110 45 117 47','M103 45 Q110 52 117 45','M103 45 Q110 52 117 45','M103 46 Q110 50 117 46'];
+  document.getElementById('char-mouth').setAttribute('d',mouths[phIdx]);
+  const emos=EMOTIONS[phIdx];const ef=document.getElementById('emotions-float');ef.innerHTML='';
+  emos.forEach(em=>{const div=document.createElement('div');div.className='emo-char';div.style.background=em.c;div.title=em.n;div.textContent=em.e;ef.appendChild(div);});
+  const dec=DAILY_DECISIONS[di];
+  document.getElementById('dec-title').textContent='Día '+day+' — ¿Qué haces?';
+  document.getElementById('dec-msg').textContent=dec.msg;
+  const dopts=document.getElementById('dec-options');dopts.innerHTML='';
+  dec.opts.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='dec-btn';btn.textContent=opt.t;btn.onclick=()=>choose(di,i,btn);dopts.appendChild(btn);});
+}
+function choose(dayIdx,optIdx,btn){
+  if(decidedToday)return;decidedToday=true;
+  const opt=DAILY_DECISIONS[dayIdx].opts[optIdx];const phIdx=getPhase(dayIdx+1);
+  totalAnswered++;phaseScores[phIdx].t++;
+  if(opt.good){totalCorrect++;phaseScores[phIdx].c++;btn.classList.add('chosen-good');}
+  else{btn.classList.add('chosen-bad');}
+  document.querySelectorAll('.dec-btn').forEach(b=>b.disabled=true);
+  document.getElementById('score-badge').textContent='✓ '+totalCorrect+' / '+totalAnswered;
+  document.getElementById('fb-emoji').textContent=opt.good?'🌸':'💡';
+  document.getElementById('fb-title').textContent=opt.good?'¡Buena elección!':'Aprendizaje del cuerpo';
+  document.getElementById('fb-text').textContent=opt.fb;
+  document.getElementById('feedback').classList.add('show');
+}
+function closeFeedback(){document.getElementById('feedback').classList.remove('show');}
+function advanceDay(){if(day===28){showResults();return;}day++;renderDay();document.querySelector('.game-body').scrollTo({top:0,behavior:'smooth'});}
+const ORGAN_DATA={
+  uterus:{title:'Tu Útero',phase_tag:()=>PHASES[getPhase(day)].name,
+    anim:()=>{const ph=getPhase(day);const colors=['#D4847A','#C9A882','#7B4F6E','#7A9B7A'];return`<svg viewBox="0 0 200 90" width="200" height="90"><ellipse cx="100" cy="50" rx="38" ry="28" fill="${colors[ph]}" stroke="${colors[ph]}88" stroke-width="1.5" opacity=".9"/><path d="M62,50 Q48,44 38,50 Q32,54 35,60" fill="none" stroke="${colors[ph]}" stroke-width="3" stroke-linecap="round"/><path d="M138,50 Q152,44 162,50 Q168,54 165,60" fill="none" stroke="${colors[ph]}" stroke-width="3" stroke-linecap="round"/><ellipse cx="34" cy="60" rx="9" ry="7" fill="${colors[ph]}CC" stroke="${colors[ph]}" stroke-width="1.2"/><ellipse cx="166" cy="60" rx="9" ry="7" fill="${colors[ph]}CC" stroke="${colors[ph]}" stroke-width="1.2"/>${ph===2?'<circle cx="166" cy="60" r="4" fill="#F5ECC8" stroke="#C9A84C" stroke-width="1"/>':''}<text x="100" y="55" text-anchor="middle" font-size="11" font-family="Nunito,sans-serif" fill="white" font-weight="700">${['Menstrual','Folicular','Ovulación','Lútea'][ph]}</text><text x="100" y="82" text-anchor="middle" font-size="8" font-family="Nunito,sans-serif" fill="#7A5A40">${['Endometrio renovándose','Endometrio engrosando','Óvulo liberado ✨','Preparando el nido'][ph]}</text></svg>`;},
+    desc:()=>{const ph=getPhase(day);return['Tu útero se contrae para expulsar el endometrio. Las prostaglandinas generan esas contracciones (cólicos). Es un proceso de limpieza y renovación completamente normal.','El estrógeno engrosa el endometrio preparando un ambiente nutritivo. Los folículos en tus ovarios maduran — uno liberará el óvulo.','¡El momento cumbre! Un pico de LH hizo que tu ovario liberara un óvulo maduro. Puedes sentir el mittelschmerz. El óvulo tiene 12-24 horas de vida.','La progesterona mantiene el endometrio preparado. Si no hay fecundación, los niveles caerán y el ciclo reiniciará.'][ph];}},
+  brain:{title:'Tu Mente',phase_tag:()=>MIND_STATE[day-1],
+    anim:()=>{const ph=getPhase(day);const colors=['#9370B8','#C9A84C','#7B4F6E','#7A9B7A'];const act=[0.3,0.7,0.95,0.5];const a=act[ph];return`<svg viewBox="0 0 200 90" width="200" height="90"><ellipse cx="100" cy="46" rx="52" ry="38" fill="${colors[ph]}18" stroke="${colors[ph]}" stroke-width="1.5"/><path d="M60,46 Q72,32 100,37 Q128,32 140,46 Q128,60 100,55 Q72,60 60,46" fill="${colors[ph]}33" stroke="${colors[ph]}55" stroke-width="1"/><circle cx="76" cy="42" r="${5+a*5}" fill="${colors[ph]}" opacity="${a}"/><circle cx="100" cy="38" r="${4+a*6}" fill="${colors[ph]}" opacity="${a*.85}"/><circle cx="124" cy="42" r="${5+a*5}" fill="${colors[ph]}" opacity="${a}"/><circle cx="88" cy="55" r="${3+a*4}" fill="${colors[ph]}" opacity="${a*.7}"/><circle cx="112" cy="55" r="${3+a*4}" fill="${colors[ph]}" opacity="${a*.7}"/><text x="100" y="82" text-anchor="middle" font-size="8" font-family="Nunito,sans-serif" fill="#7A5A40">${['Introspección · serotonina baja','Neuroplasticidad alta · dopamina ↑','Comunicación y empatía al máximo','Reflexión profunda · progesterona'][ph]}</text></svg>`;},
+    desc:()=>{const ph=getPhase(day);return['La caída del estrógeno reduce la serotonina, generando tendencia a la introspección o tristeza. No es debilidad — es tu cerebro renovándose.','El estrógeno potencia la dopamina y la neuroplasticidad. Tu capacidad de aprender y crear está en su punto más alto. ¡El mejor momento para proyectos nuevos!','Estrógeno + testosterona en su pico. Tu comunicación verbal, empatía y liderazgo son máximos. Ideal para conversaciones importantes y conexiones sociales.','La progesterona tiene efecto calmante. Tendencia al orden y el detalle. En la fase tardía, la caída hormonal puede generar irritabilidad — es química, no carácter.'][ph];}},
+};
+function showOrgan(type){const d=ORGAN_DATA[type];document.getElementById('oo-title').textContent=d.title;document.getElementById('oo-phase').textContent=d.phase_tag();document.getElementById('oo-anim').innerHTML=d.anim();document.getElementById('oo-desc').textContent=d.desc();document.getElementById('organ-overlay').classList.add('show');document.getElementById('dimmer').classList.add('show');}
+function closeOrgan(){document.getElementById('organ-overlay').classList.remove('show');document.getElementById('dimmer').classList.remove('show');}
+function showResults(){
+  document.getElementById('s-game').classList.remove('on');document.getElementById('s-result').classList.add('on');
+  const pct=totalAnswered>0?Math.round(totalCorrect/totalAnswered*100):0;
+  document.getElementById('res-score-big').textContent=totalCorrect+'/'+totalAnswered;
+  document.getElementById('res-score-label').textContent='decisiones acertadas a lo largo de tu ciclo';
+  let grade,msg,orb,orbBg;
+  if(pct>=90){grade='🌸 Maestra del ciclo';orb='🏆';orbBg='radial-gradient(circle at 35% 35%,#F5ECC8,#C9A84C 60%,#A07830)';msg='¡Extraordinario! Tu conocimiento del ciclo menstrual es profundo y aplicado. Entiendes cómo trabajar CON tu biología, no en su contra.';}
+  else if(pct>=75){grade='✨ Muy en sintonía';orb='🌟';orbBg='radial-gradient(circle at 35% 35%,#F5DDD9,#D4847A 60%,#A0624A)';msg='¡Muy bien! Tienes una comprensión sólida de tu ciclo. Con pequeños ajustes en las fases más desafiantes, podrías sincronizar aún más tu vida con tu biología.';}
+  else if(pct>=55){grade='🌱 Aprendiendo y creciendo';orb='💪';orbBg='radial-gradient(circle at 35% 35%,#D8EAD8,#7A9B7A 60%,#3A6A3A)';msg='¡Buen punto de partida! Hay mucho conocimiento del ciclo que aún puede sorprenderte. Cada ciclo es una nueva oportunidad de conocerte mejor.';}
+  else{grade='💡 El viaje comienza';orb='🌙';orbBg='radial-gradient(circle at 35% 35%,#EAD8E5,#7B4F6E 60%,#4A2050)';msg='¡Este juego fue hecho para ti! Comprender tu ciclo es una de las cosas más poderosas que puedes hacer por tu bienestar.';}
+  document.getElementById('res-orb').textContent=orb;document.getElementById('res-orb').style.background=orbBg;
+  document.getElementById('res-grade').textContent=grade;document.getElementById('res-msg').textContent=msg;
+  const phaseNames=['Menstrual','Folicular','Ovulación','Lútea'];
+  const phaseColors=['var(--rose)','var(--gold)','var(--plum)','var(--sage)'];
+  const phaseBgs=['var(--rosep)','var(--goldp)','var(--plump)','var(--sagep)'];
+  const phaseBorders=['var(--rose2)','var(--gold)','var(--plum)','var(--sage2)'];
+  const pc=document.getElementById('res-phases');pc.innerHTML='';
+  for(let i=0;i<4;i++){const s=phaseScores[i];const p=s.t>0?Math.round(s.c/s.t*100):0;pc.innerHTML+=`<div class="result-phase-card" style="background:${phaseBgs[i]};border-color:${phaseBorders[i]}"><div class="result-phase-name" style="color:${phaseColors[i]}">${phaseNames[i]}</div><div class="result-phase-score" style="color:${phaseColors[i]}">${s.c}/${s.t} · ${p}%</div><div class="result-phase-bar"><div class="result-phase-fill" style="width:${p}%;background:${phaseColors[i]}"></div></div></div>`;}
+  let worstPhase=0,worstPct=101;for(let i=0;i<4;i++){const s=phaseScores[i];const p=s.t>0?s.c/s.t:1;if(p<worstPct){worstPct=p;worstPhase=i;}}
+  const tips=['Tu fase más desafiante fue la <strong>Menstrual</strong>. Recuerda: el descanso, el calor, el magnesio y el hierro son tus aliados. Escuchar a tu cuerpo en estos días no es debilidad — es sabiduría.','Tu fase más desafiante fue la <strong>Folicular</strong>. ¡Es tu fase de superpoderes! El estrógeno potencia la energía, el aprendizaje y la creatividad. Aprovecha esta ventana de oro cada mes.','Tu fase más desafiante fue la <strong>Ovulación</strong>. Es tu momento más brillante — úsalo para conexiones, comunicación y proyectos importantes.','Tu fase más desafiante fue la <strong>Lútea</strong>. El magnesio, la B6, el ejercicio moderado y la autocompasión son clave. Los síntomas del SPM son reales y manejables.'];
+  document.getElementById('res-tip').innerHTML=tips[worstPhase];
+}
+function restartGame(){day=1;totalCorrect=0;totalAnswered=0;decidedToday=false;phaseScores={0:{c:0,t:0},1:{c:0,t:0},2:{c:0,t:0},3:{c:0,t:0}};document.getElementById('s-result').classList.remove('on');document.getElementById('s-game').classList.add('on');renderDay();}
+function startGame(){document.getElementById('s-intro').classList.remove('on');document.getElementById('s-game').classList.add('on');initHormoneGraph();renderDay();}
+</script>
+</body>
+</html>
